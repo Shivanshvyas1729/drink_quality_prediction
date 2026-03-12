@@ -1,7 +1,7 @@
 # drink_quality_prediction
 
 ## workflow
-
+0. constants -> yaml file path
 1.   update confg.yaml
 2.   update schema.yaml
 3.   update params.yaml
