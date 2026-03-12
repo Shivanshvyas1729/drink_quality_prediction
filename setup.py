@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 
 setup(
-    name="mlproject",  # project name
+    name="drink-quality-prediction",  # project name
     version="0.0.0",
     author="Shivansh Vyas",
     author_email="shivanshvyas1729@gmail.com",
