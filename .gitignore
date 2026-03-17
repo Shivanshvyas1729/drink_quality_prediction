@@ -7,7 +7,7 @@ __pycache__/
 *.so
 mlruns
 mlflow.db 
-
+artifacts/*
 # Distribution / packaging
 .Python
 build/
