@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prediction Result</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<style>
+    body {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #2b1055, #7597de);
+        font-family: 'Poppins', sans-serif;
+        color: white;
+    }
+
+    .card {
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(15px);
+        padding: 50px;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        width: 400px;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+    }
+
+    .result {
+        font-size: 32px;
+        font-weight: bold;
+        margin: 20px 0;
+    }
+
+    .good {
+        color: #00ffab;
+    }
+
+    .bad {
+        color: #ff4b5c;
+    }
+
+    a {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 12px 20px;
+        border-radius: 10px;
+        background: linear-gradient(45deg, #ff416c, #ff4b2b);
+        color: white;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+    a:hover {
+        transform: scale(1.05);
+    }
+
+    footer {
+        margin-top: 25px;
+        font-size: 13px;
+        color: #ddd;
+    }
+
+    footer a {
+        color: #ffb3c6;
+        text-decoration: none;
+        margin: 0 6px;
+    }
+</style>
+```
+
+</head>
+<body>
+
+<div class="card">
+    <h1>🍷 Prediction Result</h1>
+
+```
+{% if prediction == '1' %}
+    <div class="result good">Good Quality Drink ✅</div>
+{% else %}
+    <div class="result bad">Low Quality Drink ❌</div>
+{% endif %}
+
+<a href="/">Analyze Another Drink</a>
+
+<footer>
+    Shivansh Vyas<br><br>
+    <a href="https://www.linkedin.com/in/shivanshvyas/" target="_blank">LinkedIn</a> |
+    <a href="https://github.com/Shivanshvyas1729" target="_blank">GitHub</a> |
+    <a href="mailto:shivanshvyas1729@gmail.com">Email</a>
+</footer>
+```
+
+</div>
+
+</body>
+</html>

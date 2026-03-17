@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Drink Quality Detection</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(-45deg, #3b0a45, #6a0572, #1b1b2f, #16213e);
+    background-size: 400% 400%;
+    animation: gradientBG 12s ease infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.container {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(15px);
+    padding: 30px;
+    border-radius: 20px;
+    width: 95%;
+    max-width: 900px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #ddd;
+}
+
+.field {
+    margin-bottom: 18px;
+}
+
+label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.range-values {
+    font-size: 12px;
+    color: #ccc;
+}
+
+input[type=range] {
+    width: 100%;
+    height: 8px;
+    border-radius: 5px;
+    background: #ddd;
+    outline: none;
+    appearance: none;
+    transition: background 0.3s ease;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    border: 2px solid #ff416c;
+}
+
+.value-display {
+    text-align: right;
+    font-size: 13px;
+    margin-top: 3px;
+    color: #ff9a9e;
+}
+
+button {
+    margin-top: 20px;
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    background: linear-gradient(45deg, #ff416c, #ff4b2b);
+    color: white;
+}
+
+footer {
+    margin-top: 25px;
+    text-align: center;
+    font-size: 14px;
+    color: #bbb;
+}
+
+footer a {
+    color: #ff9a9e;
+    text-decoration: none;
+    margin: 0 6px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🍷 Drink Quality Detection</h1>
+<p class="subtitle">Adjust within realistic wine chemistry ranges</p>
+
+<form action="/predict" method="POST">
+
+<!-- Fixed Acidity -->
+
+<div class="field">
+<label>Fixed Acidity <span class="range-values">(4 – 16)</span></label>
+<input type="range" name="fixed_acidity" min="4" max="16" step="0.1" value="8" oninput="updateValue(this)">
+<div class="value-display">Value: <span>8</span></div>
+</div>
+
+<!-- Volatile Acidity -->
+
+<div class="field">
+<label>Volatile Acidity <span class="range-values">(0.1 – 1.6)</span></label>
+<input type="range" name="volatile_acidity" min="0.1" max="1.6" step="0.01" value="0.5" oninput="updateValue(this)">
+<div class="value-display">Value: <span>0.5</span></div>
+</div>
+
+<!-- Citric Acid -->
+
+<div class="field">
+<label>Citric Acid <span class="range-values">(0 – 1)</span></label>
+<input type="range" name="citric_acid" min="0" max="1" step="0.01" value="0.3" oninput="updateValue(this)">
+<div class="value-display">Value: <span>0.3</span></div>
+</div>
+
+<!-- Residual Sugar -->
+
+<div class="field">
+<label>Residual Sugar <span class="range-values">(0.5 – 15)</span></label>
+<input type="range" name="residual_sugar" min="0.5" max="15" step="0.1" value="2" oninput="updateValue(this)">
+<div class="value-display">Value: <span>2</span></div>
+</div>
+
+<!-- Chlorides -->
+
+<div class="field">
+<label>Chlorides <span class="range-values">(0.01 – 0.6)</span></label>
+<input type="range" name="chlorides" min="0.01" max="0.6" step="0.01" value="0.08" oninput="updateValue(this)">
+<div class="value-display">Value: <span>0.08</span></div>
+</div>
+
+<!-- Free SO2 -->
+
+<div class="field">
+<label>Free Sulfur Dioxide <span class="range-values">(1 – 75)</span></label>
+<input type="range" name="free_sulfur_dioxide" min="1" max="75" step="1" value="15" oninput="updateValue(this)">
+<div class="value-display">Value: <span>15</span></div>
+</div>
+
+<!-- Total SO2 -->
+
+<div class="field">
+<label>Total Sulfur Dioxide <span class="range-values">(6 – 300)</span></label>
+<input type="range" name="total_sulfur_dioxide" min="6" max="300" step="1" value="46" oninput="updateValue(this)">
+<div class="value-display">Value: <span>46</span></div>
+</div>
+
+<!-- Density -->
+
+<div class="field">
+<label>Density <span class="range-values">(0.990 – 1.005)</span></label>
+<input type="range" name="density" min="0.990" max="1.005" step="0.001" value="0.996" oninput="updateValue(this)">
+<div class="value-display">Value: <span>0.996</span></div>
+</div>
+
+<!-- pH -->
+
+<div class="field">
+<label>pH <span class="range-values">(2.8 – 4.0)</span></label>
+<input type="range" name="pH" min="2.8" max="4.0" step="0.01" value="3.3" oninput="updateValue(this)">
+<div class="value-display">Value: <span>3.3</span></div>
+</div>
+
+<!-- Sulphates -->
+
+<div class="field">
+<label>Sulphates <span class="range-values">(0.3 – 2)</span></label>
+<input type="range" name="sulphates" min="0.3" max="2" step="0.01" value="0.65" oninput="updateValue(this)">
+<div class="value-display">Value: <span>0.65</span></div>
+</div>
+
+<!-- Alcohol -->
+
+<div class="field">
+<label>Alcohol % <span class="range-values">(8 – 15)</span></label>
+<input type="range" name="alcohol" min="8" max="15" step="0.1" value="10" oninput="updateValue(this)">
+<div class="value-display">Value: <span>10</span></div>
+</div>
+
+<button type="submit">Analyze Quality</button>
+
+</form>
+
+<footer>
+Developed by <strong>Shivansh Vyas</strong><br><br>
+<a href="https://www.linkedin.com/in/shivanshvyas/" target="_blank">LinkedIn</a> |
+<a href="https://github.com/Shivanshvyas1729" target="_blank">GitHub</a> |
+<a href="mailto:shivanshvyas1729@gmail.com">Email</a>
+</footer>
+
+</div>
+
+<script>
+function updateValue(slider) {
+
+    const valueSpan = slider.nextElementSibling.querySelector("span");
+    valueSpan.innerText = slider.value;
+
+    const value = parseFloat(slider.value);
+    const min = parseFloat(slider.min);
+    const max = parseFloat(slider.max);
+    const percent = ((value - min) / (max - min)) * 100;
+
+    let color = "#4caf50"; // default green
+
+    if (slider.name === "pH") {
+        if (value < 3.1) color = "#ffc107";
+        else if (value > 3.6) color = "#f44336";
+    }
+
+    if (slider.name === "alcohol") {
+        if (value < 9) color = "#ffc107";
+        else if (value > 14) color = "#f44336";
+    }
+
+    if (slider.name === "volatile_acidity" && value > 0.8) {
+        color = "#f44336";
+    }
+
+    if (slider.name === "chlorides" && value > 0.15) {
+        color = "#f44336";
+    }
+
+    slider.style.background =
+        `linear-gradient(to right, ${color} 0%, ${color} ${percent}%, #ddd ${percent}%, #ddd 100%)`;
+}
+
+document.querySelectorAll("input[type=range]").forEach(slider => {
+    updateValue(slider);
+});
+</script>
+
+</body>
+</html>
+```
