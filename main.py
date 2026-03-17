@@ -1,12 +1,14 @@
 from mlproject import logger
-from mlproject.utils.common import read_yaml
+from mlproject.pipeline.stage_01_data_ingestion import DataIngestionTrainingPipeline
 
-logger.info("This is working")
+STAGE_NAME = "Data Ingestion stage"
 
+try:
+    logger.info(f">>>>>>>>>>stage {STAGE_NAME} started <<<<<<<<<<")
+    data_ingestion = DataIngestionTrainingPipeline()
+    data_ingestion.main()
+    logger.info(f">>>>>>>>>>stage {STAGE_NAME} completed <<<<<<<<<<\n\nx================x")
 
-# def main():
-#     print("Hello from drink-quality-prediction!")
-
-
-# if __name__ == "__main__":
-#     main()
+except Exception as e:
+    logger.exception(e)
+    raise e
