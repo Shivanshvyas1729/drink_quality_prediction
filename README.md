@@ -1,18 +1,5 @@
 # drink_quality_prediction
-(
-## workflow
-0. constants -> yaml file path
-1.   update confg.yaml
-2.   update schema.yaml
-3.   update params.yaml
-4.   update the entity
-5.   update the configuration manager in src config
-6.  update the components
-7.  update the pipeline
-8.  update the main.py
-9.  update the app.py 
 
-)
 ***
 
 # Drinks Quality Prediction System 🥤
@@ -23,7 +10,7 @@ A machine learning pipeline to predict drink quality using advanced ML technique
 
 ```bash
 # 1. Create virtual environment
-conda create -n mlproj python=3.8 -y
+conda create -n mlproj python=3.10 -y
 
 # 2. Activate environment
 conda activate mlproj
@@ -113,3 +100,7 @@ Star ⭐ the repo if this helps you! Questions? Open an issue.
 ***
 
 **Built for ML production deployment** | **bhilwara, Rajasthan** | **March 2026**
+
+
+
+ecr uri  ->   904871342857.dkr.ecr.us-east-1.amazonaws.com/drinkrepo

@@ -15,3 +15,4 @@ COPY . .
 
 # Default command to run the application
 CMD ["python", "app.py"]
+          

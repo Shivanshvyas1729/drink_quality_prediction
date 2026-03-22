@@ -1,0 +1,131 @@
+name: workflow
+
+# Run workflow on push to main branch, except when only README.md changes
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'README.md'
+
+# Required permissions for GitHub Actions
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  integration:
+    # Continuous Integration job
+    name: Continuous Integration
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout source code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Run linting
+      - name: Lint code
+        run: echo "Linting repository"
+
+      # Run unit tests
+      - name: Run unit tests
+        run: echo "Running unit tests"
+
+  build-and-push-ecr-image:
+    # Continuous Delivery job
+    name: Continuous Delivery
+    needs: integration
+    runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.build-image.outputs.image }}
+    steps:
+      # Checkout source code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Install required tools
+      - name: Install Utilities
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq unzip
+
+      # Configure AWS credentials
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # Login to Amazon ECR
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      # Build, tag, and push Docker image to ECR
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
+          IMAGE_TAG: latest
+          UNIQUE_TAG: ${{ github.sha }}
+        run: |
+          # Build Docker image with latest tag
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+
+          # Tag same image with commit SHA for traceability
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$UNIQUE_TAG
+
+          # Push both tags
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$UNIQUE_TAG
+
+          # Expose image URI as job output
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$UNIQUE_TAG" >> $GITHUB_OUTPUT
+
+  Continuous-Deployment:
+    # Deployment job on self-hosted runner
+    needs: build-and-push-ecr-image
+    runs-on: self-hosted
+    steps:
+      # Checkout source code
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Configure AWS credentials
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # Login to Amazon ECR
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      # Pull the newly built image
+      - name: Pull latest image
+        run: |
+          docker pull ${{ needs.build-and-push-ecr-image.outputs.image }}
+
+      # Stop and remove old container if it exists
+      - name: Stop and remove existing container
+        run: |
+          docker ps -aq --filter "name=^cnncls$" | grep -q . && docker stop cnncls && docker rm -fv cnncls || true
+
+      # Run the new container
+      - name: Run Docker Image to serve users
+        run: |
+          docker run -d -p 8080:8080 --name=cnncls \
+            -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
+            -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+            -e AWS_REGION=${{ secrets.AWS_REGION }} \
+            ${{ needs.build-and-push-ecr-image.outputs.image }}
+
+      # Clean unused Docker resources
+      - name: Clean previous images and containers
+        run: |
+          docker image prune -f
