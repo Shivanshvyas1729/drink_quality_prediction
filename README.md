@@ -103,4 +103,4 @@ Star ⭐ the repo if this helps you! Questions? Open an issue.
 
 
 
-ecr uri  ->   904871342857.dkr.ecr.us-east-1.amazonaws.com/drinkrepo
+<!-- ecr uri  ->   904871342857.dkr.ecr.us-east-1.amazonaws.com/drinkrepo -->
