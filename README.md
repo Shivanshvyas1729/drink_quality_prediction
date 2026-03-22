@@ -132,10 +132,3 @@ Star ⭐ the repo if this helps you! Questions? Open an issue.
 
 **Built for ML production deployment** | **Bhilwara, Rajasthan** | **March 2026**
 
-````
-
-
-
-
-
-I can also turn this into a more polished, recruiter-friendly README version.
